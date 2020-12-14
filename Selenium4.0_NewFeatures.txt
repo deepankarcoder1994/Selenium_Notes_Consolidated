@@ -1,0 +1,81 @@
+
+Selenium 4.0 New Features
+
+Topic 1 :: Selenium Relative Locators
+
+
+above():Element located above with respect to the specified Element.
+Syntax:
+
+driver.findElement(withTagName("XX").above(WebElement))
+
+
+URL to clone the programs related to Selenium =>
+https://github.com/deepankarcoder1994/SeleniumProgramsBackup.git
+
+
+-----------------------------------------------------------------------------------------------------
+
+
+Topic 2 :: Invoking Multiple Windows/Tabs from Selenium using one driver Instance.
+
+
+The main code to remember is to open a New Tab
+
+driver.switchTo().newWindow(WindowType.TAB);
+
+
+-----------------------------------------------------------------------------------------------------
+
+Topic 3 :: Capture WebElement Screenshot using Selenium.
+
+This is a new feature Introduced in Selenium 4.0 to take the screenshot of only a specific 
+WebElement which you required.
+
+
+Code Required is as below
+
+	//Getting screenshot of a webElement.Introduced in Version 4.0
+		File file = name.getScreenshotAs(OutputType.FILE);
+		FileUtils.copyFile(file, new File("D://logo.png"));
+
+
+--------------------------------------------------------------
+
+
+Topic 4: Get Height,Width of WebElement using Selenium
+
+The program to get height and width are below
+
+System.out.println(name.getRect().getDimension().getHeight());
+System.out.println(name.getRect().getDimension().getWidth());
+
+
+
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

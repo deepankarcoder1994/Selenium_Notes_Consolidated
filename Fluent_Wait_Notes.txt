@@ -1,0 +1,28 @@
+There is another explicit wait mechanism type called Fluent Wait.
+
+
+Explicit wait can be achieved in 2 ways:-
+
+1.WebDriverWait
+
+2.FluentWait
+
+
+FluentWait finds the Web element repeatedly at regular Intervals of time untill the timeout or till the Object 
+gets found.
+
+Unlike WebDriver wait,we need to build Cutsomized wait methods based on condition.
+
+Both WebDriverWait and FluentWait classes implement Wait Interface.
+
+
+for ex.
+
+WebDriverWait - 10 Seconds
+
+Fluent Wait - 10 seconds, Polling 2 seconds
+
+
+
+
+

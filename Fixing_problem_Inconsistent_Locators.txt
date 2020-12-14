@@ -1,0 +1,33 @@
+Issue while Running the code => Instead of Cucumber it Added Tomato in the Cart
+
+
+Let us see why it happened
+
+
+Earlier we thought Cucumber is in 2nd Index so it will select and add that element to the cart.
+But after you clicked on Brocolli this Text changed to Added.So cauliflower became 0th index,Cucumber on 1st Index,2nd Index beetroot.
+So the issue is Index is changing Dynamically after brocolli is added to the cart.
+So that's the reason you should not depend upon Text.So we should follow parent-child relationship
+
+xpath => //div[@class='product-action']/button to click on add to cart button.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,35 @@
+Code formatting and Debugging
+
+
+Ques => How to format and align the code in Eclipse?
+
+
+Use Ctrl+Shift+F to format the code in Eclipse IDE
+
+
+2.Naming Conventions in Defining Class,Variable and Method Names?
+
+
+There is one Convention used in the Industry called camelCase.
+
+Class Convention - First Letter must be of capital letter and other should be of small letters.
+
+Variable Name Convention - Variable name should always start with small letters.
+When you have multiple words in your variable name all the subsequent word should start with capital letters.
+
+for ex => mousePad
+
+
+
+3.How to debug the code in Eclipse
+
+ 
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,30 @@
+Lecture 118. Learning Everything about Java Streams
+
+
+Stream API is a new feature available from Java 8.
+By using streams we can perform various aggregate operations on the data returned from collections classes by drastically reducing the complexity of
+Code.
+
+
+What is Lambda Expression?
+
+Lambda Expression Introduces the new Arrow operator -> into Java.
+It divides the lambda expression in 2 parts:-
+
+The left side specifies the parameter required by the expression, which could also be empty if no parameters are required.
+The right side of the Lambda body which specifies the actions of the lambda expression.
+
+
+Note :: The Aggregate operations that we perform on the collection, array or any other data source do not change the data of the source, they 
+simply return a new stream.
+
+
+
+
+
+
+
+
+
+
+

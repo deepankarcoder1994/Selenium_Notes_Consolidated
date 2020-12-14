@@ -1,0 +1,36 @@
+Dropdown Automation
+
+
+1.You can select a dropdown element based on Value,Index,Text
+
+
+for example
+
+            //Select by Value
+			s.selectByValue("USD");
+			//Select by Index
+			s.selectByIndex(3);
+			//select by Text
+			s.selectByVisibleText("AED");
+			
+			
+2.You can select a Object in the dropdown Using the select() method of selenium webdriver.
+
+
+3. The above code will work only when dropdown have a select tag and options tag.
+
+
+-----------------------
+
+Static Dropdown - Select
+
+Dynamic Dropdown with Indexes.
+
+
+----------------
+
+
+
+
+
+			

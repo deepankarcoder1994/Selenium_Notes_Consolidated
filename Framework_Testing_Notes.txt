@@ -1,0 +1,483 @@
+Framework Learning
+
+
+A. TestNG
+
+Importance of TestNG
+
+
+1.How to Run tests with TestNG framework?
+
+You need to have a @Test Annotation followed by method
+
+@Test Annotation => If this annotation is placed above a method then automatically TestNG will treat it as a 
+Test.
+
+
+2.testng.xml
+
+TestSuite -> Test Folder(Module)-> testcases
+
+
+How to run test cases through testng.xml
+
+RightClick on testng.xml file and select Run as TestNGSuite
+
+
+-----------------------------------------------------------------
+
+
+Prioritizing the TestCases with TestNG
+
+
+Suppose I need to exclude method named MobileLoginincarLoan() from execution then the code is below:-
+
+<test name="Car Loan">
+	<classes>
+		<class name="test.day3">
+			<methods>
+                <exclude name="MobileLoginincarLoan"/>
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+
+Note:
+You can also get a control on running specific methods from test case.
+
+
+-------------------------------------------------------------
+
+Suppose in a class there are 30 test cases which are linked to Mobile Module and you want to 
+exclude all of them , then regular expression comes into picture
+
+
+If you have written all those methods starting with Keyword 'Mobile'.
+then you can use regular expression to exclude all those Methods
+
+for ex =>  <exclude name="Mobile.*"/>
+
+
+
+Executing the Test Cases at Package Level using regex =>
+
+
+1.The below code will run all the test cases inside package named test
+
+
+<suite name="Loan Department">
+
+<!--  Running all the test cases inside test package -->
+	<test name="Personal Loan">
+	<packages>
+	  <package name="test"/>
+	</packages>
+
+	</test>
+
+</suite> 
+
+
+-----------------------------------------------------------------
+
+
+TestNg Annotations Part-1
+
+
+1. @BeforeTest
+
+It will execute before any other test executed present in a suite.
+
+
+2.@AfterTest
+
+The scope of this annotation is only to a test folder where that method is defined.
+So after all the test are executed for module named "Personal Loan" then that 
+test will execute after @AfterTest Annotation.
+
+
+-------------------------------------------------------------
+
+TestNg Annotations Part-2
+
+@AfterSuite => It will hold control over all other test folders and will always execute at last when all the test cases
+from all Test folders have already executed.
+
+
+@BeforeSuite => It will hold control over all other test folders and will always execute at beginning when all the test cases
+from all Test folders are yet to be executed.
+
+Note:The scope of both the annotation is entire xml file.
+
+@BeforeMethod => It will execute everytime before a  Method is executed present in that class.
+Scope of this annotation only belongs to current class where it is defined.
+
+
+@BeforeMethod => It will execute everytime after a  Method is executed present in that class.
+Scope of this annotation only belongs to current class where it is defined.
+
+
+
+@BeforeClass => It will execute the method Before executing any any method in the class.
+Scope is particular class only.
+
+
+@AfterClass => It will execute the method after executing any any method in the class.
+Scope is particular class only.
+
+
+Note :=> @BeforeClass and @BeforeMethod are at class level scope.
+
+@AfterSuite, @BeforeSuite are testng.xml level 
+
+Note:- @Test methods are executed by TestNG framework in Alphabetical Order.
+
+
+------------------------------------------------------------------------------------
+
+Usage of Groups Functionality in TestNG.
+
+Scanario => Suppose client came and selected 3 methods which needs to be run after
+every build and he picked the methods randomly then how you will run those out of 100 test cases defined in different class
+levels?
+
+Ans => for Achieving this there is a concept called Groups in TestNg.
+
+We give a tag name to the tests that client has preffered to be executed after every test.
+like below.
+
+@Test(groups={"Smoke"})
+	public void ploan() {
+		System.out.println("good");
+}
+
+
+Now go to testng.xml and write the below code to run only the methods having group name as Smoke.
+
+<test name="Regression">
+		<groups>
+			<run>
+				<include name="Smoke" />
+			</run>
+		</groups>
+		<classes>
+			<class name="test.day1" />
+			<class name="test.day2" />
+			<class name="test.day3" />
+			<class name="test.day4" />
+		</classes>
+</test>
+
+
+Note:: You can also use exclude keyword also in above example to exclude all the test cases with Smoke and run everything.
+
+
+----------------------------
+
+Annotation helper attribute with Example
+
+Helper Atribute 1 => dependsOnMethods
+
+As we already discussed earlier TestNg Will execute the @Test annotated methods according to 
+Alphabetical Order. but suppose you want one method to execute before other method. In that case how would you do that.
+
+Ans . You will use a property called dependsOnMethods and give the method name which you want to execute first before 
+current Method Execution.
+
+for ex => 
+@Test(dependsOnMethods={"WebloginCarLoan"})
+	public void LoginAPIcarLoan() {
+		//restapi automation
+		System.out.println("APILoginCar");
+	}
+	
+	
+WEBLOGINCARLOAN() METHOD WILL EXECUTE FIRST BEFORE LOGINAPICARLOAN() METHOD
+
+
+Note => you can also depend on multiple methods.
+dependsOnMethods is a helper attribute to annotation called @Test.
+
+
+
+Helper Atribute 2 => enabled.
+
+@Test(enabled=false) => Suppose you already know that one test case has a bug and you don't want that test case
+to be executed so use attribute enabled = false and TestNg will skip that test to be executed.
+Code is below
+
+
+@Test(enabled=false)
+	public void MobileDemo() {
+		System.out.println("Deepankar is testing some mobile features!");
+}
+
+
+Helper Atribute 3 => timeOut
+
+Suppose your one test case is taking more time to execute and because of that other Test are failing 
+so you can use helper attribute called timeOut so that test will not fail for that amount of time.
+
+for ex => Code is 
+
+@Test(timeOut = 4000)
+	public void Demo() {
+		System.out.println("hello");
+}
+
+
+---------------------------------------------------------
+
+Parameterising from TestNG xml file
+
+Suppose one parameter is there which is common to all the test files. so you can declare that parameter
+in testng.xml under <suite> tag
+
+A.Suite Level Parameterisation => Any Class under that suite can use this parameter
+
+<suite name="Loan Department">
+<parameter name="URL" value="qaclickacademy.com"/>
+
+
+2. To use this parameter in one of test class the code is below
+
+
+@Parameters({"URL"})
+	@Test
+	public void catchParameters(String urlName) {
+		System.out.println(urlName);
+	}
+	
+
+
+
+B. Test Level Parameterisation => Only the classes under that Test Level can use this parameter.
+
+
+<!-- Test Module -->
+	 <test thread-count="5" name="Personal Loan">
+	  <!-- Test Level Parameterisation  -->
+	 <parameter name="URL1" value="deepankaracademy.com"/>
+		<classes>
+			<class name="test.day1" />
+			<class name="test.day2" />
+		</classes>
+	</test>	
+	
+	
+Note : You can add multiple parameters as well to you testng.xml file and catch them in classes.
+
+
+Code is 
+
+testng.xml code
+
+ <test thread-count="5" name="Personal Loan">
+	  <!-- Test Level Parameterisation  -->
+	  
+	 <parameter name="URL1" value="deepankaracademy.com"/>
+	  <parameter name="APIKey/username" value="123456"/>
+	  
+		<classes>
+			<class name="test.day1" />
+			<class name="test.day2" />
+		</classes>
+	</test>
+	
+
+
+Java code to catch these parameters in class is 
+
+@Parameters({"URL1","APIKey/username"})
+	@Test
+	public void MultipleParameterCatch(String urlName1,String key) {
+		System.out.println(urlName1);
+		System.out.println(key);
+}
+
+
+-----------------------------------------
+Very Important Interview Question
+
+
+Data Provider Annotation - Part 1
+
+Suppose you have to run your test on multiple data.
+Assume you have 20 data sets. SO means you have to run a particular test case with 20 different data sets.
+
+Parameterising with Multiple data sets by running tests with multiple combination? How to do that?
+
+Ans: By using @DataProvider Annotation.
+
+
+Suppose you want to run one test case with three data sets.
+Then first write a data provider like this.
+
+
+@DataProvider
+		public Object[][] getData() {
+			//1st combination  -- username and password -- good credit history
+			//2nd -- No Credit History
+			//3rd -- fraudelant credit history
+			
+			Object[][] data = new Object[3][2];
+			
+			//1st set data
+			data[0][0] = "firstsetusername";
+			data[0][1] = "password";
+			//columns in the row are nothing but values for that particular combination.
+			
+			//2nd Set
+			data[1][0] = "secondsetusername";
+			data[1][1] = "secondpassword";
+			
+			//3rd Set
+			data[2][0] ="thirdsetusername";
+			data[2][1] ="thirdpassword";
+			
+			return data;
+		}
+
+----------------------------------------------------------
+
+Data Provider Annotation - Part 2
+
+To use this data provider in the Test pls use the below code.
+So the this same test is executed for three different data sets.
+
+
+@Test(dataProvider="getData")
+		public void MobilesignoutcarLoan(String username,String password) {
+			System.out.println("Inside Mobile Signout method");
+			System.out.println(username);
+			System.out.println(password);
+}
+
+
+
+Note:: In Summary you can do parameterization using testng.xml file or via @DataProvider Annotation.
+
+
+----------------------------------------------------------
+Listeners Interface in TestNG framework
+
+Q.What are TestNg Listeners?
+Scenario => Suppose you are running 100 test cases and you need to take the screenshot where the test fails
+while executing.
+
+Listeners listens to your test cases. It listens to your execution results and if it hears something failed
+it will invoke a particular method.
+
+Step 1: We have to Implement ITestListener Interface.
+
+
+public class Listeners implements ITestListener {
+
+	@Override
+	public void onTestStart(ITestResult result) {
+		// TODO Auto-generated method stub
+		ITestListener.super.onTestStart(result);	
+	}
+
+	@Override
+	public void onTestSuccess(ITestResult result) {
+	   System.out.println("i successfully executed Listeners Pass Code");
+	}
+
+	@Override
+	public void onTestFailure(ITestResult result) {
+		// TODO Auto-generated method stub
+		ITestListener.super.onTestFailure(result);
+	}	
+	
+	
+	
+Step 2: We need to configure the class in testng.xml
+
+<suite name="Loan Department">
+
+<listeners>
+
+ <listener class-name="test.Listeners"/>
+ 
+</listeners>
+
+
+
+
+Suppose we need to know that which test case failed.
+
+You can achieve that by calling getName() method on result object like below.
+
+@Override
+	public void onTestFailure(ITestResult result) {
+		System.out.println("I failed in executing Listeners Pass Code" + result.getName());
+}
+
+
+----------------------------------------
+
+
+Running Tests in Parallel and generating reports
+
+If you want to run all test parallely
+
+so for that one parameter you need to use at suite level like below
+
+<suite name="Loan Department" parallel="tests" thread-count="2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+	
+
+
+
+
+	
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

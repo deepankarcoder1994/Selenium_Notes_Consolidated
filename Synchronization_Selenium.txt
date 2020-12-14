@@ -1,0 +1,88 @@
+Synchronization in Selenium
+
+
+1.Implicit Wait
+
+2.Explicit Wait
+
+3.Thread.Sleep
+
+4.Fluent Wait
+
+=====================================================================================
+
+1.Implicit Wait => Wait for n Number of Seconds before you throw exception.
+It is declared Globally.
+
+
+2.Explicit Wait => In Explicit wait you can target specific element and say to wait for 15 seconds.
+It is only applicable to that specific element Only.
+
+
+In real time , combination of Implicit and Explicit wait works.
+
+
+3.Thread.sleep => It is a concept of Java.Suppose you ask to wait for 5 seconds and page loaded in 3 seconds then also
+it will wait for 5 Seconds.
+
+
+================================================================
+Lec 75 
+
+
+Scenario to Automate and necessity of waits in the example
+
+
+When we wrote the whole code the promo code didn't got Entered. so to solve this problem Implicit wait concepts
+needs to come in picture
+
+So wherever in the page loading feature is there the selenium tool will wait for the time which is declared globally
+ie.Implicit Wait
+
+
+====================
+
+Implicit Wait Pros
+
+1.Readable code
+
+
+Cons
+
+performance cause Issues are not caught
+
+
+===================
+
+Explicit wait
+
+
+Pros
+
+1.It can be applied only at targetted elements.
+
+
+
+Cons
+
+2.More Code is required.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

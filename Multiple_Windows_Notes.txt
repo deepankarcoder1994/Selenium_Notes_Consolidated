@@ -1,0 +1,24 @@
+Handling Ajax/Mouse Interactions
+
+
+Let us start with Actions.
+
+
+We have seen the exmaple of Actions class in the amazon website for performing hover over a particular element
+and entering Hello text in capital letter in search Text Box.
+
+Refer the code written in actionsDemo.java class
+
+
+
+-------------------------------------
+
+Handling Multiple Windows
+
+
+Complete Window Handling Assignment(Assignment 4) after Learning Frames Concept
+
+
+
+
+

@@ -1,0 +1,198 @@
+Maven - Build Management Tool
+
+
+Apache Maven is a software project management and build management tool for Java Frameworks.
+
+
+Why Maven?
+
+1.Central Repository to get dependencies.
+
+
+In real time we don't hardcode the jar.So if we don't hardcode the jar then how our project will know where the
+jars are located.Here Maven comes into picture.
+
+So you can add the below lines of code. Maven will read this code and will place all the required jars into 
+build path automatically after downloading them from central repository.
+
+
+2.Maintaining common structure across Organisation.
+
+Whole organisation should adhere to common structure for building a project. That is achieved through maven.
+
+
+3.Flexibility in integrating with CI tools.
+
+We can integrate Jenkins also for running test cases.no need to run it manually, it automatically executes all test cases.
+So maven here can be used as a build management tool.
+
+4.Plugins for Test framework execution.
+
+
+-------------------------------------------
+
+Understanding Maven Terminologies
+
+1.GroupId -- groupid will identify your project uniquely across all projects.
+
+
+for example => maven will uniquely identify selenium project with the group id given below
+
+<groupId>org.seleniumhq.selenium</groupId>
+
+2.Artifact Id - An artifact is a file, usually a JAR, that gets deployed to a Maven repository.
+It is basically a subproject which identifies the jar.
+
+for ex =>
+<artifactId>selenium-java</artifactId> 
+
+Now let's create our first maven project in eclipse
+
+
+----------------------------------------------------
+
+Maven Sure Fire Plugin
+
+So the maven Sure Fire plugin will help to execute all your Test Cases present in your test folder.
+
+
+
+--------------------
+
+Maven commands to  to Clean, compile, test
+
+Command 1 => mvn clean
+
+Command 2 => mvn compile
+
+
+Command 3 => mvn test
+
+--------------------------------------
+
+Integration of TestNg with Maven
+
+In the last lecture we saw how to execute all test cases from Test folder through maven -- mev test
+
+I want to trigger testng.xml file from maven.
+
+
+Another alternative is to use TestNG suite XML files. This allows flexible configuration of the tests to be run. These files are created in the normal way, and then added to the Surefire Plugin configuration:
+
+Go to this url in google
+
+https://maven.apache.org/surefire/maven-surefire-plugin/examples/testng.html
+
+
+Step 1: Add configuration Tag to maven-surefire plugin like below
+
+
+ <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>	
+          <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>testng.xml</suiteXmlFile>
+          </suiteXmlFiles>
+        </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+
+Step 2: Tweak testng.xml file and exclude Appium Test from Running
+
+<suite name="Suite">
+  <test thread-count="5" name="Test">
+    <classes>
+      <class name="qaclickacademy.Mavenjava.RESTAPITest"/>
+      <!-- <class name="qaclickacademy.Mavenjava.AppiumTest"/> -->
+      <class name="qaclickacademy.Mavenjava.SeleniumTest"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
+
+
+Step 3: Go to the path D:\Personal_docs\Selenium_Workspace\Mavenjava and execute command mvn test
+
+O/P => You will see only 4 test case ran hence our maven is pointing to testng.xml 
+
+
+
+Running a Single Test only => Important Interview Question
+
+So you have to run below command
+
+
+mvn -Dtest=TestCircle test
+
+---------------------------------------------------------
+
+Switching the Tests with Maven Profiling
+
+
+Suppose there are two testng.xml file and one has only high level tests(Smoke test) 
+and another one contains all the tests.
+
+So how will you ask maven to run one time smoke test and another time regression or all tests?
+
+Step 1: First create a profile for regression test using <profile> tag as below
+
+
+<profiles>
+  
+  <profile>
+   <id>Regresssion</id>
+  
+   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>	
+          <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>testng2.xml</suiteXmlFile>
+          </suiteXmlFiles>
+        </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  
+  </profile>
+  
+  </profiles>
+  
+  
+Step 2: Enter the below command to run regression test
+
+mvn test -PRegression  
+
+for Running Smoke Test run below command
+
+mvn test -PSmoke
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+

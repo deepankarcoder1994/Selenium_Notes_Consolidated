@@ -1,0 +1,114 @@
+Importance of Jenkins in Test Frameworks
+
+
+Jenkins is a Continuous Integration tool which is primarly developed for Automation.
+
+Scenario where it is used =>
+
+Tests should trigger automatically without any manual Intervention.
+the single command triggering that we did in maven section also should be automated.
+
+Suppose thousands of test cases are there and you want their result 9 am in morning.
+then we can create a Background job in Jenkins which will trigger all test cases to run at 2 am.
+so it will hit the command automatically at 2 am.
+
+
+--------------
+
+
+Installing Jenkins
+
+Step 1: Go to this path and download Generic Java Package(.war)
+
+https://www.jenkins.io/download/
+
+Step 2:Go to the location where you jenkins war is located. You need one command to start Jenkins server into your windows machine
+
+java -jar jenkins.war --httpPort=9090
+
+
+
+2e73f6c833a6440aa7ee0a0fcc874471
+
+This may also be found at: C:\Users\deepankars\.jenkins\secrets\initialAdminPassword
+
+
+----------------
+
+Jenkins user name and password
+
+user name : deepankar
+pwd : deepankar@123
+
+url => http://localhost:9090/
+
+---------------------------
+
+How to run maven project designed previously to run via Jenkins?
+
+
+Step 1: Click on manage Jenkins Icon and Click on global Tool Configuration
+
+Give Java jdk and maven path here like below
+
+
+apache-maven-3.3.9
+D:\apache-maven-3.3.9
+
+
+jdk1.8.0_271
+C:\Program Files\Java\jdk1.8.0_271
+
+
+Step 2: After that come to Dashboard menu and Click on new Item
+
+
+Give the job name in Item Name like for ex  "Maven Job"
+
+
+Step 3: Click on advanced button and check use custom workspace checkbox
+
+Give the directory name as ${JENKINS_HOME}/Mavenjava.
+
+Note :: Make sure Maven Java project is copied to .jenkins folder under the below location.
+
+C:\Users\deepankars\.jenkins
+
+
+Step 4:Go to build section click on Invoke top-level Maven targets
+
+and give maven version as 	"apache-maven-3.3.9"
+
+in goals section give the maven command you want to run like below. No need to give keyword mvn.
+
+test -PRegression
+
+
+
+Step 5:Click on save
+
+Your Job is ready to execute.
+
+Step 6: Go to specific job and Click on Build Now.
+
+It will run and store the result.Click on result and if you want to see console output 
+click on "console output" menu. It will show complete logs having all the details of test cases.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+

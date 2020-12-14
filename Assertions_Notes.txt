@@ -1,0 +1,23 @@
+Importance of Assertions in Automation Testing & how to use them
+
+
+
+To use assertions we have to depend on any testing framework like TestNG or JUnit
+
+
+TestNG => It is one of the testing framework which we will use when we are building automation framework using selenium.
+the System will fail the test if it is not returning the expected Outcome.
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+

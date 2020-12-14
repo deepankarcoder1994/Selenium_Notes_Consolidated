@@ -1,0 +1,33 @@
+How to Drive the Global Environmental values from External Files to Tests in Java
+
+
+how to read external .properties file and use that in Java Code
+
+
+Step 1:Create data.properties file and define some of the properties there.
+
+browser=chrome
+url=http://rahulshettyacademy.com
+
+Step 2: Create a Java Class and pls use the below Code snippet:-
+
+
+public class GlobalValuesDrive {
+
+	public static void main(String[] args) throws IOException {
+		//Creating Object of Properties Class
+		Properties prop = new Properties();
+		FileInputStream fis = new FileInputStream("D:\\Personal_docs\\Selenium_Workspace\\GlobalEnvVariables\\src\\data.properties");
+		prop.load(fis);
+		//Extracting both the properties
+		System.out.println(prop.getProperty("browser"));
+		System.out.println(prop.getProperty("url"));
+		//Suppose you want to update some value for a property.
+		prop.setProperty("browser", "firefox");
+		System.out.println(prop.getProperty("browser"));
+		
+		//Write back the updated value of browser property to data.properties the code is below
+		FileOutputStream fos = new FileOutputStream("D:\\Personal_docs\\Selenium_Workspace\\GlobalEnvVariables\\src\\data.properties");
+		prop.store(fos, null);
+	}
+}

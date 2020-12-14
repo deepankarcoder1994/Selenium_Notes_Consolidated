@@ -1,0 +1,13 @@
+How to Handle the Frames
+
+
+Frames - 
+
+frame in selenium webdriver is a webpage or an Inline frame which is embedded in another webpage or an 
+HTML document embedded inside another HTML document.
+
+
+If you run this code the script will fail as this entire element is present inside a frame
+
+         driver.get("https://jqueryui.com/droppable/");
+		 driver.findElement(By.xpath("//div[@id='draggable']")).click();
