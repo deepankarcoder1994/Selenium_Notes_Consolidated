@@ -1,6 +1,5 @@
 Importance of Jenkins in Test Frameworks
 
-
 Jenkins is a Continuous Integration tool which is primarly developed for Automation.
 
 Scenario where it is used =>
@@ -42,7 +41,7 @@ pwd : deepankar@123
 
 url => http://localhost:9090/
 
----------------------------
+--------------------------------------------------------------------
 
 How to run maven project designed previously to run via Jenkins?
 
@@ -92,7 +91,58 @@ Your Job is ready to execute.
 Step 6: Go to specific job and Click on Build Now.
 
 It will run and store the result.Click on result and if you want to see console output 
-click on "console output" menu. It will show complete logs having all the details of test cases.
+click on "console output" menu. It will show complete logs having all the details of test cases
+
+
+
+http://localhost:9090/job/MavenJob/
+
+---------------------------------------------
+
+15/12/2020 -- Lecture 171 --  TestNg Reporting Plugin into Jenkins Job
+
+
+Once you have run the Job we created in previous lectures
+
+then you go the surefire-reports and click on index.html and get the path.
+
+paste in chrome and you will get to see the results
+
+One more file you will find ie.testng-results.xml => Here all your results are generated in xml file.
+Now Test Ng has provided one feature that if you pass this xml to your TestNg it will create reports for you in
+Jenkins.
+
+
+for that some steps you need to perform 
+
+
+1.Download the plugin named TestNg reports and restart the jenkins
+
+2.go to configure tab for the job named MavenJob created.
+
+and go to post build actions and select Publish TestNg results and save it
+
+
+3.Let us also schedule Jenkins Job for a specific time.
+
+
+M H D M DayWeek
+
+15 22 * * *
+
+
+The meaning of above cron job expression is run everyday,everymonth at 22:15 hrs 
+
+
+4.After running Test Ng Results link . click on that and click on Package named qaclickacademy.Mavenjava
+you will get detailed result that how much time each test case took to execute.
+
+
+
+
+
+
+
 
 
 

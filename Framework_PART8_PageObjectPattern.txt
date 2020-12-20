@@ -1,0 +1,230 @@
+Framework Part 8 -- Pageobject Pattern & Page Factory
+
+
+Q1.What is Page Object Model?
+
+Ans=> Let us write our scripts in an effective way.
+You must design your scripts in such a way that if something changes in future, then you have to update them only in one place
+and evey where it should reflect properly.
+
+
+Features of Page Object Pattern 
+
+1.Easy to maintain
+2.Easy readibility of scripts.
+3.Reduce or eliminate duplicacy.
+4.Re-usablity of code.
+5.Reliablity.
+
+
+-----------------------------
+
+Creating Page Object constructor in classes
+
+
+Suppose I have to design automation for website named as Rediff.com
+
+Step 1:I will create a Java class to store objects of home page.
+
+HomePage - Java Class(RediffHomePage)-- objects of home page in this class.
+
+
+Step 2: I will create a Java Class to store objects of Login Page.
+
+LoginPage - Java Class(Loginpage) -- Objects of Login page.
+
+Similarly for each page I will create a class,
+
+
+Testcase => Suppose I want to login
+
+If suppose 100 places I have to login, so it is not a best practise to write login pages from 100 different sites.
+then I will call LoginPage object from Driver methods simply.
+All my 100 test cases will call the email id Object from this login page.`
+Suppose in future username field changes I will update only in java class pointing to Login page object and in every test 
+case it will be reflected.
+
+-------------------------------------------
+
+Object Repository Mechanism
+
+The code is 
+
+public class RediffLoginpage {
+	
+	WebDriver driver;
+	By username = By.xpath("//input[@id='login1']");
+	By password = By.xpath("//input[@id='password']");
+	By go = By.xpath("//input[@name='proceed']");
+}
+
+-----------------------------------------------
+
+Practical Exercises explaining Page Object Model.
+
+
+Step 1:Create a class named RediffLoginpage and write the below code here.
+
+public class RediffLoginpage {
+	
+	WebDriver driver;
+	
+	//Constructor of RediffLoginpage class.Passing my test case driver into RediffLoginpage.
+	//hence we are transferring our capabilities from Test Case to our class.
+	
+	public RediffLoginpage(WebDriver driver) {
+		this.driver = driver;
+	}
+	
+	
+	By username = By.xpath("//input[@id='login1']");
+	By password = By.xpath("//input[@id='password']");
+	By go = By.xpath("//input[@name='proceed']");
+	
+	public WebElement Emaild() {
+		return driver.findElement(username);
+	}
+	
+	public WebElement Password() {
+		return driver.findElement(password);
+	}
+	
+	public WebElement submit() {
+		return driver.findElement(go);
+	}
+	
+	
+}
+
+
+Step 2:Create a class named Loginapplication and write the below code here.
+
+
+public class Loginapplication {
+
+	@Test
+	public void Login() {
+		System.setProperty("webdriver.chrome.driver", "D:\\Personal_docs\\chromedriver.exe");
+		WebDriver driver = new ChromeDriver();
+		driver.get("https://mail.rediff.com/cgi-bin/login.cgi");
+		
+		//The username, password now should come from Object repository. You must not hardcode
+		// the values.
+		//Creating a object of RediffLoginPage class and accessing the Email id method.It implements easy readibility of Tests.
+		RediffLoginpage rd = new RediffLoginpage(driver);
+		rd.Emaild().sendKeys("hello");
+		rd.Password().sendKeys("4567");
+		rd.submit().click();
+	}
+}
+
+
+---------------------------
+
+Page Object Factory and it's Advantages
+
+
+We can create N number of class for different pages in the application.
+
+for ex if we click on forgot password link we are navigating to different page,so creating separate class for that.
+
+public class RediffForgotPasswordpage {
+
+	WebDriver driver;
+
+	// Constructor of RediffLoginpage class.Passing my test case driver into
+	// RediffLoginpage.
+	// hence we are transferring our capabilities from Test Case to our class.
+
+	public RediffForgotPasswordpage(WebDriver driver) {
+		this.driver = driver;
+	}
+
+	By emailid = By.xpath("//input[@id='txtlogin']");
+	By NextButton = By.xpath("//input[@type='submit']");
+
+	public WebElement EmailIdtextbox() {
+		return driver.findElement(emailid);
+	}
+
+	public WebElement NextButton() {
+		return driver.findElement(NextButton);
+	}
+
+}
+
+Step 2: now in our test class creating the object for this class and calling respective methods like below.
+
+RediffForgotPasswordpage rf = new RediffForgotPasswordpage(driver);
+		rf.EmailIdtextbox().sendKeys("deepankars");
+		rf.NextButton().click(); 	
+
+
+
+Note : By using this page Object pattern the readibility of the test case is high and complexity is also reduced.
+It also reduces or eliminates duplicacy as only in central repository where you have defined Login page properties
+,if that is changed it will reflect in all Test cases.
+
+-------------------------------------------------------
+
+Page Factory Annotation - FindBy
+
+There is one more way to find the elements by using @FindBy Annotation.
+for ex.
+
+Step 1:Create a new class named as RediffLoginpagePageFactor. java and add below  code
+
+	//FindBy Annotation Demo
+	@FindBy(xpath="//input[@id='login1']")
+	WebElement username;
+	
+	@FindBy(xpath="//input[@id='password']")
+	WebElement password;
+	
+	@FindBy(xpath="//input[@name='proceed']")
+	WebElement go;
+	
+	@FindBy(linkText="Forgot Password?")
+	WebElement forgotpassword;
+	
+	
+Step 2: No need to write driver.findElement and all just return the Weblement captured in previous step like below.
+
+
+public WebElement Emaild() {
+		return username;
+	}
+	
+	public WebElement Password() {
+		return password;
+	}
+	
+	
+	public WebElement submit() {
+		return go;
+	}
+	
+	public WebElement forgotPassword() {
+		return forgotpassword;
+}	
+
+
+Step 3: Write this one line in Constructor of class named RediffLoginpagePageFactory.java
+
+public RediffLoginpagePageFactory(WebDriver driver) {
+		this.driver = driver;
+		PageFactory.initElements(driver, this);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

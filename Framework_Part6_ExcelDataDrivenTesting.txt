@@ -1,0 +1,31 @@
+Apache POI API => It is used to drive the data from Excel to your Test.
+That is achieved os Apache POI API.
+
+
+Data driven testing from Excel
+
+Maven Dependencies setup:
+poi-ooxml and poi dependenies are needed.
+
+
+Strategy to access Excel Data
+
+1.Create Object for XSSFWorkbook class.
+
+2.Get Access to the Sheet
+
+3.Get Access to all rows of Sheet.
+
+4.Access to specific row from all rows.
+
+5.Get Access to all cells of Row.
+
+6.Access the data from Excel into Arrays.
+
+
+
+
+
+
+
+
