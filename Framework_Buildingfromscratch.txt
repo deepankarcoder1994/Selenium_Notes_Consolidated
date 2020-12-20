@@ -1,0 +1,691 @@
+Building framework from scratch - Real Time Project
+
+
+End to End Framework agenda
+
+Creation of Maven Project
+
+Creation Base and utility functions
+
+Organising Page Objects
+
+Adding Tests
+
+Datadriving/Parametrizing Tests
+
+Converting into TestNG framework
+
+Log 4j Api for Logging inside framework
+
+TestNg Listeners
+
+Screenshots on Test Failures
+
+Creating Excellent HTML reports for Test Results
+
+Jenkins - Continous Integration
+
+---------------------------------------------------------
+
+
+End to End Project Development from Scratch
+
+1.Create Maven Project
+
+Add the below dependencies in pom.xml
+
+ <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>3.4.0</version>
+</dependency>
+    
+    <!-- https://mvnrepository.com/artifact/org.testng/testng -->
+<dependency>
+    <groupId>org.testng</groupId>
+    <artifactId>testng</artifactId>
+    <version>6.8</version>
+    <scope>test</scope>
+</dependency>
+
+
+2.let us create a Utility base class which every test case must follow. Suppose you have 1500 test cases and all have browser invocation code then 1500 browser window will open, and that is a very bad coding practice. So better create a common 
+utility class for that called base.java under folder src/main/java
+
+base.java Code
+
+
+
+/*
+ * Designed one Common Utility to Initialise a Driver.
+ */
+
+public class base {
+	
+	public WebDriver driver;
+
+	public WebDriver initializeDriver() throws IOException {
+		// Code to connect the java code to properties file and extract some of the
+		// properties.
+		// Global env lectures Section 21
+		Properties prop = new Properties();
+		FileInputStream fis = new FileInputStream(
+				"D:\\Personal_docs\\Selenium_Workspace\\E2EProject\\src\\main\\java\\Academy\\data.properties");
+
+		prop.load(fis);
+		String browserName = prop.getProperty("browser");
+		System.out.println(browserName);
+		//Cannot use == operator when you are extracting a value from a properties file else you will get NPE exception.
+		//Using equals() method
+		if(browserName.equals("chrome")) {
+			//execute in chrome Driver
+			System.setProperty("webdriver.chrome.driver", "D:\\Personal_docs\\chromedriver.exe");
+			driver = new ChromeDriver();
+			
+		}else if (browserName.equals("firefox")) {
+			System.setProperty("webdriver.gecko.driver", "D:\\Personal_docs\\geckodriver.exe");
+			driver = new FirefoxDriver();
+		}
+		
+		//Implicit wait concept studied in section 10 Synchronization
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		//returning the driver Object so that the caller of this method can use the above property which were set
+		return driver;
+	}
+
+}
+
+
+
+3.Use this initializeDriver() method in some testcase file like below.
+
+//Inheriting the class having the utility method
+public class HomePage extends base {
+	
+	@Test
+	public void basePageNavigation() throws IOException {
+		driver=initializeDriver();
+		
+	}
+
+}
+
+
+--------------------------------------------
+
+Implement Page Object Mechanism to drive tests
+
+
+Step 1: For the landing page let us create a Page Object and embed all the properties in that.
+
+public class LandingPage {
+	
+	public WebDriver driver;
+	
+	By signin=By.cssSelector("a[href*='sign_in']");
+	
+	//Creating Constructor
+   public LandingPage(WebDriver driver) {
+		this.driver=driver;
+	}
+
+	//Centralised getLogin() method which can be used in 100 test cases
+	public WebElement getLogin() {
+		
+		return driver.findElement(signin);
+	}
+}
+
+
+Step 2:Let us use this in our test case.
+
+
+public class HomePage extends base {
+	
+	@Test
+	public void basePageNavigation() throws IOException {
+		driver=initializeDriver();
+		driver.get("http://qaclickacademy.com");
+		//Accessing Landing Page Object Class and calling login() method
+		LandingPage l = new LandingPage(driver);
+		l.getLogin().click();
+	}
+
+}
+
+
+
+Note:: If you get the below type of exception then there is something wrong in your xpath/css selector code
+
+
+org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"css selector","selector":"a[href*='sign in']"}
+
+
+
+-------------------------------------
+
+Step 3: Creating page object for Login Page
+
+public class LoginPage {
+	
+	public WebDriver driver;
+	
+	By email=By.xpath("//input[@type='email']");
+	By password = By.xpath("//input[@type='password']");
+	By Login = By.xpath("//input[@value='Log In']");
+	
+	//Creating Constructor
+   public LoginPage(WebDriver driver) {
+		this.driver=driver;
+	}
+
+	//Centralised getEmail() method which can be used in 100 test cases
+	public WebElement getEmail() {
+		return driver.findElement(email);
+	}
+	
+	//Centralised getPassword() method which can be used in 100 test cases
+	public WebElement getPassword() {
+		return driver.findElement(password);
+	}
+	
+	//Centralised Login() method which can be used in 100 test cases
+		public WebElement getLogin() {
+			return driver.findElement(Login);
+		}
+}
+
+
+Step 4:using that Login page page object in HomePage.java Test
+
+LoginPage lp = new LoginPage(driver);
+		
+		lp.getEmail().sendKeys("abc@gmail.com");
+		lp.getPassword().sendKeys("12345");
+		Thread.sleep(4000);
+		lp.getLogin().click();
+		
+--------------------------------------------------------
+
+Asserting the Test cases with validation.
+
+test case 1: Suppose I have to validate one text present in the landing page
+
+test case 2: Suppose I need to know whether navigation bar is present or not?
+
+Step 1: GO to the landing page and add the xpath to identify the elements on Landing page.
+
+public class LandingPage {
+
+	public WebDriver driver;
+
+	By signin = By.cssSelector("a[href*='sign_in']");
+	// Featured Courses Text is present or not in Landing Page.
+	By title = By.xpath("//div[@class='text-center']/h2");
+	//Checking Navigation bar
+	By Navbar = By.xpath("//div[@role='navigation']");
+
+	// Creating Constructor
+	public LandingPage(WebDriver driver) {
+		this.driver = driver;
+	}
+
+	// Centralised getLogin() method which can be used in 100 test cases
+	public WebElement getLogin() {
+
+		return driver.findElement(signin);
+	}
+
+	public WebElement getTitle() {
+
+		return driver.findElement(title);
+	}
+	
+	public WebElement getNavigationBar() {
+
+		return driver.findElement(Navbar);
+	}
+	
+Step 2: Design two test cases in test cases folder with the name validateTitle() and validateNavigationBar()
+like below:-
+
+
+public class validateTitle extends base {
+
+	@Test
+	public void basePageNavigation() throws IOException, InterruptedException {
+		driver = initializeDriver();
+		driver.get("http://qaclickacademy.com");
+		// Accessing Landing Page Object Class and calling getTitle() method
+		LandingPage l = new LandingPage(driver);
+		// compare the text from browser with actual value with the help of Assertions.
+		Assert.assertEquals(l.getTitle().getText(), "Featured Courses");
+		
+	}
+
+
+
+public class validateNavigationBar extends base {
+
+	@Test
+	public void basePageNavigation() throws IOException, InterruptedException {
+		driver = initializeDriver();
+		driver.get("http://qaclickacademy.com");
+		// Accessing Landing Page Object Class and calling getTitle() method
+		LandingPage l = new LandingPage(driver);
+		// compare the text from browser with actual value with the help of Assertions.
+		Assert.assertTrue(l.getNavigationBar().isDisplayed());
+	}	
+
+
+-----------------------------------------------------------------
+
+Converting Framework into TestNg and configuring TestNg xml file.
+
+
+Step 1: Right click on the project and click on TestNg and right click and convert to TestNg.
+
+
+Step 2: A xml file called testng.xml will be generated having all the test cases combined in aa suite.
+
+
+Step 3:Let us add @BeforeTest and @AfterTest Annotation to close the browser after each test ran and initalise the driver
+related things in AfterTest Annotation like below.
+
+
+@BeforeTest
+	public void initialize() throws IOException {
+		driver = initializeDriver();
+		driver.get("http://qaclickacademy.com");
+	}
+
+
+
+@AfterTest
+	public void tearDown() {
+		driver.close();
+}
+
+
+---------------------------------------------------------
+
+Integrating TestNg with Maven 
+
+These we can achieve the maven sure fire plugin.
+
+Step 1: Add the below plugin to pom.xml file
+
+
+<build>
+  <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>testng.xml</suiteXmlFile>
+          </suiteXmlFiles>
+        </configuration>
+      </plugin>
+</plugins>
+  
+</build>
+
+
+
+Step 2: Go to project path like below
+
+D:\Personal_docs\Selenium_Workspace\E2EProject	
+  
+  
+
+Step3: open cmd in this path and give various maven commands
+
+
+mvn compile
+
+mvn test
+
+All the test cases ran successfully then maven is integrated successfully with TestNg.
+
+---------------------------------------------------
+
+
+Integrating Log4j logging API into Framework
+
+
+Step 1 : Add this dependency in your pom.xml file
+
+
+<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.14.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.14.0</version>
+  </dependency>
+  
+  
+Step 2: Create log4j.xml file and give necessary info there that where do you want to print the logs and 
+you want to print the logs in a file or console.
+
+
+Step 3: Add loggers in test cases wherever you find comfortable. They help a lot in debugging if there are more than 100 test cases.
+
+
+@BeforeTest
+	public void initialize() throws IOException {
+		driver = initializeDriver();
+		
+		log.info("Driver is Initialized");
+		
+		driver.get("http://qaclickacademy.com");
+		
+		log.info("Navigated to HomePage");
+	}
+	
+	
+	
+	public void basePageNavigation() throws IOException, InterruptedException {
+	// Accessing Landing Page Object Class and calling getTitle() method
+		LandingPage l = new LandingPage(driver);
+		// compare the text from browser with actual value with the help of Assertions.
+		Assert.assertEquals(l.getTitle().getText(), "FEATURED COURSES");
+		log.info("Successfully validated Text Message");
+		
+	}
+
+
+ Very Imp Note :: If we are running test via maven it should know the location of log4j.xml file 
+that info you have to provide in pom.xml through resource tag like below so that it considers the file inside resources folder
+during exection and you get expected result. please place it under build tag.
+
+
+<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+
+</resources>			
+
+
+
+-----------------------------------------------------------------------
+
+Fixing the Framework Issues by tweaking TestNg xml file
+
+Glitch 1: There is a slight glitch in the framework that we are designing.
+
+All the browsers are opening , but they are closing only after all the tests are executed.
+They are not closing after their subsequent completion of test case.
+
+
+The way to resolve this problem is to wrap all the test cases in different Test Classes like below:-
+
+<suite name="Suite">
+
+
+	<test name="Validating User Login">
+		<classes>
+			<class name="Academy.HomePage" />
+		</classes>
+	</test>
+
+	<test name="Validating title in the Page">
+		<classes>
+			<class name="Academy.validateTitle" />
+		</classes>
+	</test>
+
+
+<test name="App testing">
+		<classes>
+			<class name="Academy.AppTest" />
+		</classes>
+	</test>
+	
+	
+	<test name="Validating navigation Bar">
+		<classes>
+			<class name="Academy.validateNavigationBar" />
+		</classes>
+	</test>
+	
+</suite>
+
+
+Glitch 2: Let us assign local WebDriver Object to all the test classes like(HomePage.java,validateTitle.java,validateNavigationBar.java)
+
+
+public class validateNavigationBar extends base {
+	public WebDriver driver;
+	public static Logger log = LogManager.getLogger(base.class.getName());
+	
+	
+	
+Till now all the Test Cases were Running Sequentially.Now Suppose you want to run all the test parallely, then how would you achieve that?	
+
+Just add parallel="tests" at suite level.
+
+<suite name="Suite" parallel="tests">
+
+----------------------------------------
+
+Screenshot on Test Failure - TestNG Listeners
+
+
+Let us fail one test to implement this
+
+The Complete code is as below
+
+
+Step 1: Create a class called Listeners.java and write the below Code
+
+public class Listeners extends base implements ITestListener {
+
+@Override
+	public void onTestFailure(ITestResult result) {
+	  //Getting the name of the method which got failed
+		WebDriver driver= null;
+		String testMethodName = result.getMethod().getMethodName();
+		//Accessing a particular field of Test class which got failed through selenium code
+		try {
+			driver = (WebDriver)result.getTestClass().getRealClass().getDeclaredField("driver").get(result.getInstance());
+		} catch(Exception e) {
+			
+		}
+		//Getting a screenshot when method fails
+		try {
+			getScreenshotPath(testMethodName,driver);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+
+
+
+Step 2:Creating a utility method of taking a screenshot in base.java file
+
+	
+public void getScreenshotPath(String testCaseName,WebDriver driver) throws IOException {
+		TakesScreenshot ts = (TakesScreenshot)driver;
+		File source = ts.getScreenshotAs(OutputType.FILE);
+		String destinationFile = System.getProperty("user.dir")+"\\reports\\" +testCaseName+".png";
+		FileUtils.copyFile(source,new File(destinationFile));	
+	}
+	
+	
+Step 3:In TestNg.xml file specify the listeners like below.
+
+
+<suite name="Suite" parallel="tests">
+
+	<listeners>
+		<listener class-name="Academy.Listeners" />
+	</listeners>	
+
+
+---------------------------------------------------------
+
+
+Extent Reports on Generation on Test Execution
+
+
+Step 1:Create a class named as ExtentReporterNG.java
+
+
+public class ExtentReporterNG {
+	
+	static ExtentReports extent;
+	
+	public static ExtentReports getReportObject() {
+		
+		String path = System.getProperty("user.dir")+"\\reports\\index.html";
+		ExtentSparkReporter reporter = new ExtentSparkReporter(path);
+		reporter.config().setReportName("Web Automation Results");
+		reporter.config().setDocumentTitle("Test Results");
+		
+		//ExtentReports is the main class 
+		extent = new ExtentReports();
+		extent.attachReporter(reporter);
+		extent.setSystemInfo("Tester", "Deepankar Sharma");
+		return extent;
+	}
+
+
+Step 2:Go to listeners and write the below code
+
+
+public class Listeners extends base implements ITestListener {
+
+	ExtentReports extent = ExtentReporterNG.getReportObject();
+	ExtentTest test;
+	
+	
+	@Override
+	public void onTestStart(ITestResult result) {
+		test = extent.createTest(result.getMethod().getMethodName());
+
+	}
+	
+@Override
+	public void onTestSuccess(ITestResult result) {
+		test.log(Status.PASS, "Test passed");
+
+	}
+
+
+@Override
+	public void onFinish(ITestContext arg0) {
+		extent.flush();
+
+	}
+
+Step 3: Remove parallel execution step from testng.xml and let the tests run sequentially
+
+
+<suite name="Suite">
+
+
+------------------------------------------------------------
+
+How to make framework Thread safe for Parallel execution.
+
+
+Suppose you have to do parallel execution of tests and you want consolidated report should generate correctly
+without any Overlapping.
+
+Then there is a class called ThreadLocal through which concurrency is achieved.
+
+
+//Making framework Thread Safe
+	ThreadLocal<ExtentTest> extentTest = new ThreadLocal<ExtentTest>();
+	
+	and use it in code like below:-
+	
+
+
+@Override
+	public void onTestStart(ITestResult result) {
+		test = extent.createTest(result.getMethod().getMethodName());
+		extentTest.set(test);
+	}
+
+@Override
+	public void onTestSuccess(ITestResult result) {
+		extentTest.get().log(Status.PASS, "Test passed");
+
+	}
+
+
+--------------------------------------------------------------------------
+
+
+Optimizing Page Objects feature with smart way of object creation.
+
+
+Suppose there are 10 Page Objects so will you create 10 new operator statement to initialise in your test case.
+That is a bad practise.
+
+
+In our HomePage.java we observed that whenever we are clicking on a button we are navigating to a new Page.
+so new object creation code we can write in the method from where we are getting Object for clicking a button.
+
+Step 1: Go to LandingPage.java file and add the below code
+
+public LoginPage getLogin() {
+
+		driver.findElement(signin).click();
+		LoginPage lp = new LoginPage(driver);
+		return lp;
+	}
+
+
+
+Step 2: Go to HomePage.java and modify the code as below:-
+
+@Test(dataProvider = "getData")
+	public void basePageNavigation(String username, String password)
+			throws IOException, InterruptedException {
+		driver.get("http://qaclickacademy.com");
+		// Accessing Landing Page Object Class and calling login() method
+		LandingPage l = new LandingPage(driver);
+		//Optimizing Page Object feature.Here you are having 2 pages but you are Initiating 
+		//only once.
+		LoginPage lp=l.getLogin();
+		lp.getEmail().sendKeys(username);
+		lp.getPassword().sendKeys(password);
+		//System.out.println(text);
+		/*  Thread.sleep(4000);*/
+	//	log.info(text);
+		lp.getLogin().click();
+	}
+	
+	
+	
+-----------------------------	------------------------------------
+	
+Integrating Project to Jenkins CI tool
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,254 @@
+Selenium Framework Optimization and Interview Questions
+
+
+Q.How to parameterize Jenkins build with different Browsers Execution? => Important Interview Questions
+
+Suppose some business related managers need to run your Tests on some other browsers they cannot change the 
+browser=chrome in your data.properties file since they are not Technical.
+
+So, better You should Integrate some feature like build with parameters having the browser list on which they can run their Tests,
+hence non technical guys can also run the tests according to their needs.
+
+
+So you need to send browser parameter through you maven command.
+for ex => mvn test -Dbrowser=chrome
+
+Step 1: In base.java add the below code 
+
+String browserName = System.getProperty("browser");
+
+Now the advantage of this code is now the browser is controlled by maven command not by the code.
+
+
+-------------------------------------------------------------------------------------------------
+
+Now let's Integrate this command through Jenkins.
+
+Live Example in parameterizing job with multiple browser options
+
+Step 1: Go to configure settings in job created for E2E project.
+
+
+Step 2: Check the field This Project is parameterized
+Add the browser in Name
+and in Choices add the different browsers.
+
+cLICK ON Save
+
+Step 3:Build with parameters options will be enabled.
+
+Step 4: Now to integrate this option in our Build parameters.
+Just give the below command in Goals section of maven.
+
+test -Dbrowser="$browser"
+
+and click on save.
+
+Step 5: Now again come to Build with Parameters and select browser as firefox and click on build.
+Now you will see all your test cases will run on firefox browser and build success message will come at end.
+
+hence you can ask your managers , non technical also to select on which browser you need to run and it will run happily there.
+
+
+--------------------------------------------------------------------------------------------------
+Important Question in Interview => How did you achieve in you Java based Selenium framework.
+
+Coding standards to achieve encapsulation in framework
+
+Reference => LandingPage.java
+
+If you go to your pageObjects classes which we designed we did not gave access modifiers to variables as well as 
+Methods.
+
+1.Variables => 
+Suppose now you want to use Inheritance concept you cannot use these variables and methods in child class.
+But that is a good practice to not expose the variables to outside class.
+
+     private By signin = By.cssSelector("a[href*='sign_in']");
+	// Featured Courses Text is present or not in Landing Page.
+	private By title = By.xpath("//div[@class='text-center']/h2");
+	//Checking Navigation bar
+	private By Navbar = By.xpath("//div[@role='navigation']");
+	
+	
+So better do not expose it as public because people might misuse the public variables.
+If it is declared as private you cannot access it outside the class.
+
+
+2.Methods => Methods are advised to be declared as public so that if somebody executes the method the logs which are printed
+inside the method will be logged and acts as a help to developers to get the bug identified.
+
+
+So best coding standard is to write private variables and public methods.
+
+--------------------------------------------------------------------------------------------------------
+
+Remove hardcoded Paths from framework by generating paths dynamically.
+
+
+If you go to the base file so you have the path hardcoded in your coding like below:-
+
+
+FileInputStream fis = new FileInputStream(
+				"D:\\Personal_docs\\Selenium_Workspace\\E2EProject\\src\\main\\java\\resources\\data.properties");
+				
+You should not declare the path like this.
+
+Because some other person who is downloading your project and using it, he will not have the same path in his machine.
+
+
+Step 1: There is a method in java which will give the path of root projectby default no matter what is the system
+you are operating on
+
+System.getProperty("user.dir");
+
+
+So use this in the path like below:-
+
+
+FileInputStream fis = new FileInputStream(
+				System.getProperty("user.dir") + "\\src\\main\\java\\resources\\data.properties");
+				
+				
+Hence hardcoding is eliminated in framework.
+
+
+------------------------------------------------------------------
+
+How to execute tests in chrome head less mode?
+
+Q.What is Head less execution?
+Ans.If you run your test cases the browser will not get opened.
+You will not see the browser getting opened, but still all tests will run with chrome binary.
+
+Let us see how we can chrome run in headless mode.
+
+
+Step 1: You can achieve this through ChromeOptions class and we can configure the Arguments to run the browser as "headless".
+and pass those options in our driver object creation.
+
+ChromeOptions options = new ChromeOptions();
+options.addArguments("headless");
+driver = new ChromeDriver(options);
+
+
+Note:When running headless , make sure you have latest selenium version.
+
+-------------------------------------------------
+
+Lecture 223 =>
+
+Where are Inheritance,Interfaces and Statics are used in framework?
+
+Can driver be static or non static?
+
+
+We are using Inheritance in all our test cases to access the initializeDriver() method written in our base class.
+
+like below:-
+
+public class validateNavigationBar extends base {
+
+@BeforeTest
+	public void initialize() throws IOException {
+		driver = initializeDriver();
+	}
+}
+
+
+public class HomePage extends base{
+
+@BeforeTest
+	public void initialize() throws IOException {
+		driver = initializeDriver();
+	}
+
+}
+
+
+We are using Interface concept in Listeners.java class where our class is implementing ITestListener interface.
+
+public class Listeners extends base implements ITestListener {
+//Code here
+}
+
+
+Can driver be static or non static?
+
+Ans- Suppose you declare WebDriver variable as static in base.java
+
+public static WebDriver driver;
+
+Then the meaning of this is that if multiple test cases are accessing this driver then it will not create 
+new Object , it will share the existing copy only.
+
+So, if you run sequentially then there is no problem at a time only one test will run so there is no chance 
+other test can overrride this driver object.
+
+But if you are running in parallel mode then every test case might want to access driver object at same time.
+
+But there is a beauty in our framework that no matter if you put static or not our test will not fail 
+if you run in parallel.
+
+We actually had a local driver copy in our test cases like below.
+
+public class validateNavigationBar extends base {
+	public WebDriver driver;
+	public static Logger log = LogManager.getLogger(base.class.getName());
+	
+	@BeforeTest
+	public void initialize() throws IOException {
+		driver = initializeDriver();
+		driver.get("http://qaclickacademy.com");
+}
+
+
+
+Ans => If you are running your test cases in sequential mode then static keyword is advantageous to have less memory on
+your heap space.
+But if you are runnning your tests in parallel you cannot use static keyord because you might run into NPE exception.
+
+
+
+------------------------
+
+Best Approach on how to consolidate the test cases
+
+
+
+
+
+
+
+
+
+
+
+
+				
+
+
+				
+
+
+
+
+
+
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+ 
+
+
+

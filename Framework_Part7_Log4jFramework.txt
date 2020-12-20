@@ -1,0 +1,236 @@
+What is Apache Log4j?
+
+
+log4j is a reliable,fast and flexible logging framework(API's) written in Java, which is distributed under the Apache 
+Software License.
+
+
+Why Log4j?
+
+Client Questions?
+
+Send the entire logs of file?
+
+
+Log only when there is error for Package A --------- Package A 30 tests, package B 50 tests, 
+
+	
+log the entire message for Package B      ---------- 
+
+
+I want logs with timestamp.
+
+I want the log file of last week.
+
+
+How will I know if there is an error by just looking at logs?
+
+----------------------
+
+
+Importing and using log4j in eclipse
+
+
+first of all declare getLogger method of LogManager API so that you can use that in whole class.
+
+The Program demo is 
+
+
+public class Demo {
+	
+	//Common step which you need if you want to use log object in your class.
+	private static Logger log = LogManager.getLogger(Demo.class.getName());
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		// You can use debug(),info(),error() and fatal() methods
+		
+		log.debug("I am debugging");
+		if(5>4)
+			log.info("object is present");
+		log.error("object is not present"); 
+		
+        
+		log.fatal("this is fatal!!");
+		
+	}
+	
+	
+When you run this Program as Java Application only error and fatal messages will be displayed by default.
+Because this is the default configuration of log4j framework.
+
+Error StatusLogger : No Log4j configuration file found. Using default configuration: logging only errors to the console.
+
+
+O/P of above Program is (Differentiated by ERROR and FATAL keywords)
+
+13:11:53.954 [main] ERROR alpha.Demo - object is not present
+13:11:53.956 [main] FATAL alpha.Demo - this is fatal!!
+
+
+
+*******When to Use log. Error, debug and info methods in Selenium test cases*****************************
+  
+Use log. Error() => to log when elements are not displayed in the page or if any validations fail. 
+
+Use Log. Debug() => When each Selenium action is performed like click, SendKeys, getText().
+
+
+Use log.info() => When operation is successfully completed ex: After loading page, or after any successful validations 
+It’s just counterpart to log. Error() 
+
+
+---------------------------------------
+
+Importance of log4j xml file?
+
+
+Questions which helps us in understanding this concept
+
+
+Q1.Where to Log?
+
+Where to Log will be found in Appenders tag. below is example
+
+<Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+
+
+Q2.How to Log?
+Ans : and how to Log the logs will be given in PatternLayout tag
+
+<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+
+
+Q3.What to Log?
+Ans : What to Log can be done in Loggers tag like below.
+
+
+ <Loggers>
+    <Logger name="com.foo.Bar" level="trace" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+	<!-- The below lines are actually controlling what to log to the console.It is saying only log error -->
+    <Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+  
+-------------------------------------------------------
+
+Understanding the xml file to control logging in TestCase.
+
+Step1 :Create a folder named resources inside project directory in eclipse and create a XML file there
+named log4j2.xml and add the below code there.
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+  <!--  Now it will print everything to console -->
+    <Root level="trace">
+      <AppenderRef ref="Console"/>
+    </Root>
+  </Loggers>
+</Configuration>	
+
+
+  
+Step 2: please remember to configure the resources folder under Build Path Source  tab.
+
+Right Click on project -> Build Path -> Configure Build path  -> Source tab -> Add folder(Add resources folder)
+
+Click on Apply and Apply and close.
+
+
+Step 3: go to .java class created run as Java Application.
+
+
+Scenario 2: Suppose client wants only error messages from Alpha Package.
+whereas in beta he wants all the messages.
+
+
+You can achieve it by using below code
+
+<Loggers>
+     
+    <Logger name="alpha.Demo" level="error" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+  
+  
+=> This code will instruct that for Demo class in alpha package only print the error.
+
+Note: If you don't add the property called additivity="false" then the same trace will be printed two times.
+
+
+---------------------------------------------
+
+Test case logging with log4j - example 1
+
+
+If you want the logs to be written in a file you will have to perform it in Appenders tag only.
+
+Step 1: Add the below code snippet in log4j2.xml file.
+
+
+<RollingFile name="File" fileName="${basePath}/prints.log" filePattern="${basePath}/prints-%d{yyyy-MM-dd}.log">
+     <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <SizeBasedTriggeringPolicy size="500" />
+</RollingFile>
+
+
+
+ Note :: SizeBasedTriggeringPolicy size="500" means after 500 kb space is consumed please create a new file and starting
+ printing the logs there. The new file name is decided by log4j by below code snippet.
+ 
+ filePattern="${basePath}/prints-%d{yyyy-MM-dd}.log"
+ 
+ 
+ 
+Step 2: Create logs package and place prints.log file and give the path of logs package in log4j2.xml file like below.
+ 
+ <Properties>
+<Property name="basePath">./logs</Property>
+</Properties>
+
+
+
+------------------------------------
+
+Test Case Logging with log4j example continued.
+
+
+
+
+
+
+
+
+
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
